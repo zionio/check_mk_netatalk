@@ -1,2 +1,2 @@
 # check_mk_netatalk
-Simple Check_MK check for netatalkd
+Simple Check_MK local check for netatalkd
