@@ -1,0 +1,40 @@
+#!/bin/bash
+#
+# Check_MK local check for netatalkd
+# no perfdata
+#
+
+
+# Path to netatalk.conf
+NETATALK_CFG_FILE="/etc/netatalk/netatalk.conf"
+
+for proc_conf in `grep "_RUN" ${NETATALK_CFG_FILE}`
+ do
+	eval $proc_conf
+	proc_name=$( echo ${proc_conf%_RUN*} | tr [A-Z] [a-z] )
+	proc_run=${proc_conf%=*} ; proc_active=${!proc_run}
+
+	case $proc_active in
+		"no") 
+			# do nothing 
+			continue ;;
+		"yes")
+			mk_proc=$proc_name ; pid=`pgrep -o -u root $mk_proc`
+			if [ ! -z $pid ]; then
+				mk_status=0
+				mk_status_str="OK"
+				mk_proc_pid=$pid
+				mk_status_txt="is running"
+			else
+				mk_status=2
+				mk_status_str="CRITICAL"
+				mk_proc_pid="n/a"
+				mk_status_txt="is not running"
+			fi
+		;;
+		"*") break ;;
+	esac	
+	
+	echo "$mk_status Netatalk_$mk_proc - $mk_status_str - $mk_proc $mk_status_txt (pid $mk_proc_pid)"
+
+ done
