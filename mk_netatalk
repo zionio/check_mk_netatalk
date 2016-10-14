@@ -1,4 +1,5 @@
 #!/bin/bash
+# @zionio 2015
 #
 # Check_MK local check for netatalkd
 # no perfdata
